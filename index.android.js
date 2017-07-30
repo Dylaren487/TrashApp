@@ -12,11 +12,12 @@ import {
     ScrollView,
     AppRegistry,
     AsyncStorage,
-    TouchableOpacity,
+    TouchableOpacity
 } from 'react-native';
 
 import CustomTabBar from './CustomTabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import GridView from 'react-native-super-grid';
 
 var content = null
 
@@ -85,17 +86,32 @@ export default class TrashApp extends Component {
         this.fetchLanguage(lang)
     }
 
-    renderPage(){
-        if(content.item[this.state.currentPage].status=='category'){
-
-        }else if(content.item[this.state.currentPage].status=='trash'){
-            console.log('tra')
+    handleItemSelect(item) {
+        if (item != -1) {
+            this.setState({
+                currentPage: item
+            })
         }
+    }
+
+    resetAll() {
+        this.setState({
+            currentPage: 0
+        })
+    }
+
+    renderItem(id) {
+        return (
+            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleItemSelect(id)}>
+                <Text style={styles.itemName}>{id}</Text>
+            </TouchableOpacity>
+        )
     }
 
     render() {
         return <ScrollableTabView
-            initialPage={0}
+            initialPage={1}
+            onChangeTab={()=>this.resetAll()}
             renderTabBar={() => <CustomTabBar />}
         >
             <ScrollView tabLabel="md-home" style={styles.tabView}>
@@ -104,10 +120,20 @@ export default class TrashApp extends Component {
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-search" style={styles.tabView}>
-                <View style={styles.card}>
-                    <Text>Friends</Text>
-                    {this.renderPage()}
-                </View>
+                <TouchableOpacity
+                    onPress={()=>this.handleItemSelect(content.items[this.state.currentPage].parentID)}><Text>Back{this.state.currentPage}</Text></TouchableOpacity>
+                {content.items[this.state.currentPage].status == 'category' ?
+                    <GridView
+                        enableEmptySections={true}
+                        itemWidth={100}
+                        items={content.items[this.state.currentPage].childID}
+                        style={styles.gridView}
+                        renderItem={item => this.renderItem(item)}
+                    />
+                    :
+                    <View>
+
+                    </View>}
             </ScrollView>
             <ScrollView tabLabel="md-trash" style={styles.tabView}>
                 <View style={styles.card}>
@@ -147,6 +173,27 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 2, height: 2,},
         shadowOpacity: 0.5,
         shadowRadius: 3,
+    },
+    gridView: {
+        paddingTop: 25,
+        flex: 1,
+    },
+    itemContainer: {
+        justifyContent: 'flex-end',
+        borderRadius: 5,
+        padding: 10,
+        height: 150,
+        backgroundColor: '#555555'
+    },
+    itemName: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: '600',
+    },
+    itemCode: {
+        fontWeight: '600',
+        fontSize: 12,
+        color: '#fff',
     },
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
