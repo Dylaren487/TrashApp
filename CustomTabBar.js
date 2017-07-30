@@ -68,19 +68,15 @@ const CustomTabBar = React.createClass({
 });
 
 const styles = StyleSheet.create({
-    header: {
-        alignSelf: 'center',
-        fontSize: 20,
-        padding: 5
-    },
     tab: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 10,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
     tabs: {
-        height: 40,
+        height: 50,
         flexDirection: 'row',
         borderWidth: 1,
         borderTopWidth: 0,
