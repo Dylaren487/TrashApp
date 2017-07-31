@@ -1,11 +1,11 @@
 {
-  "bin": [
+  "items": [
     {
       "id": 0,
       "name": "",
-      "description": "",
+      "description": "ประเภทขยะ",
        "bin":0,
-      "parentID":"",
+      "parentID":"-1",
       "childID": [
         1,
         2,
@@ -22,7 +22,7 @@
     {
       "id": 1,
       "name": "พลาสติก",
-      "description": "",
+      "description": "-",
        "bin":0,
       "parentID":"0",
       "childID": [
@@ -40,27 +40,27 @@
     {
       "id": 2,
       "name": "เศษอาหาร",
-      "description":"0",
+      "description":"-",
       "bin":3,
-      "parentID": "",
+      "parentID": "0",
       "childID": [],
-      "status": "category",
+      "status": "trash",
       "image":"./img2.jpg"
     },
     {
       "id": 3,
       "name": "ผ้า",
-      "description": "",
+      "description": "-",
       "bin":1,
       "parentID":"0",
       "childID": [],
-      "status": "category",
+      "status": "trash",
       "image":"./img3.jpg"
     },
     {
       "id": 4,
       "name":"กระดาษ",
-      "description": "",
+      "description": "-",
       "bin":0,
       "parentID":"0",
       "childID": [
@@ -76,8 +76,8 @@
     {
       "id": 5,
       "name":"โฟม",
-      "description":"",
-      "bin":0,
+      "description":"-",
+      "bin":1,
       "parentID":"0",
       "childID": [],
       "status": "category",
@@ -86,7 +86,7 @@
     {
       "id": 6,
       "name":"แก้ว",
-      "description": "",
+      "description": "-",
       "bin":0,
       "parentID":"0",
       "childID": [
@@ -99,7 +99,7 @@
     {
       "id": 7,
       "name":"โลหะ",
-      "description":"",
+      "description":"-",
       "bin":0,
       "parentID":"0",
       "childID": [
@@ -112,7 +112,7 @@
     {
       "id": 8,
       "name": "ขยะอันตราย",
-      "description":"",
+      "description":"-",
       "bin":0,
       "parentID":"0",
       "childID": [
@@ -262,7 +262,7 @@
     {
       "id": 22,
       "name": "เศษแก้ว",
-      "description": "หอเศษแก้วด้วยกระดาษหนังสือพิมพ์ก่อนทิ้ง",
+      "description": "ห่อเศษแก้วด้วยกระดาษหนังสือพิมพ์ก่อนทิ้ง",
       "bin":2,
       "parentID": "6",
       "childID": [],
@@ -282,7 +282,7 @@
     {
       "id": 24,
       "name": "ฝาจีบ",
-      "description": "",
+      "description": "-",
       "bin":2,
       "parentID": "7",
       "childID": [],
@@ -292,7 +292,7 @@
     {
       "id": 25,
       "name": "น้ำยาทำความสะอาด",
-      "description": "",
+      "description": "-",
       "bin":4,
       "parentID": "8",
       "childID": [],
@@ -302,7 +302,7 @@
     {
       "id": 26,
       "name": "ยาฆ่าแมลง",
-      "description": "",
+      "description": "-",
        "bin":4,
       "parentID": "8",
       "childID": [],
@@ -322,7 +322,7 @@
     {
       "id": 28,
       "name": "ยาหมดอายุ",
-      "description": "",
+      "description": "-",
        "bin":4,
       "parentID": "8",
       "childID": [],
@@ -332,7 +332,7 @@
     {
       "id": 29,
       "name": "เครื่องสำอาง",
-      "description": "",
+      "description": "-",
        "bin":4,
       "parentID": "8",
       "childID": [],
@@ -362,7 +362,7 @@
     {
       "id": 32,
       "name": "แบตเตอรี่",
-      "description": "ใส่หลอดไฟในถุงพลาสติกและห่อให้มิดชิดก่อนทิ้ง",
+      "description": "ใส่แบตเตอรี่ในถุงพลาสติกและห่อให้มิดชิดก่อนทิ้ง",
        "bin":4,
       "parentID": "8",
       "childID": [],
@@ -370,44 +370,69 @@
       "image":"./img32.jpg"
     }
   ],
-"Bin":[{
+"Bin":[
+   {
+    "id":0,
+    "name":"ประเภทถังขยะ",
+    "color":"",
+    "dispose":[],
+    "parentID":"-1",
+    "childID":[1,2,3,4],
+    "status": "category",
+    "image":"./imgB0.jpg"
+    },
+  {
     "id":1,
-    "name":"ทั่วไป",
-    "color":"น้ำเงิน",
+    "name":"ถังขยะทั่วไป",
+    "color":"สี:น้ำเงิน",
     "displose":[3,5,9,11,14,15],
+    "parentID":"0",
+    "childID":[],
+    "status": "bin",
     "image":"./imgB1.jpg"
   },
   {
     "id":2,
-    "name":"รีไซเคิล",
-    "color":"เหลือง",
+    "name":"รถังขยะรีไซเคิล",
+    "color":"สี:เหลือง",
     "displose":[10,12,13,16,17,18,19,20,21,22,23,24],
+    "parentID":"0",
+    "childID":[],
+    "status": "bin",
     "image":"./imgB2.jpg"
   },
   {
     "id":3,
-    "name":"ขยะมูลฝอย",
-    "color":"เขียว",
+    "name":"ถังขยะมูลฝอย",
+    "color":"สี:เขียว",
     "displose":[2],
+    "parentID":"0",
+    "childID":[],
+     "status": "bin",
     "image":"./imgB3.jpg"
     
   },
   {
     "id":4,
-    "name":"ขยะอันตราย",
-    "color":"แดง",
+    "name":"ถังขยะอันตราย",
+    "color":"สี:แดง",
     "displose":[25,26,27,28,29,30,31,32,33],
+    "parentID":"0",
+    "childID":[],
+     "status": "bin",
     "image":"./imgB4.jpg"
     
   }
   ],
   "favorite":"ชื่นชอบ",
   "recent":"ล่าสุด",
+  "mostSelect":"ทิ้งมากที่สุด",
   "globalStatistic":"สถิติทั่วโลก",
   "localStatistical":"สถิติของฉัน",
   "clearHistory":"ล้างการค้นหา",
   "changeLanguage":"เปลี่ยนภาษา",
   "item":"ประเภท",
-  "quantity":"จำนวน"
-
+  "quantity":"จำนวน",
+  "notes":"คำแนะนำ",
+  "disposal":"ทิ้งขยะ"
 }

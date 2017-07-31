@@ -13,7 +13,8 @@ import {
     AppRegistry,
     AsyncStorage,
     TouchableOpacity,
-    WebView
+    WebView,
+    Picker
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -28,13 +29,15 @@ export default class TrashApp extends Component {
     constructor() {
         super();
         this.state = {
+            listMode: 'favorite',
             general: 0,
             compostable: 0,
             recycle: 0,
             hazardous: 0,
             currentPage: 0,
-            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            recent: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            currentBin: 0,
+            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            recent: [],
             mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             mostTrashedBin: [0, 0, 0, 0],
             language: 'en'
@@ -42,14 +45,14 @@ export default class TrashApp extends Component {
         this.handleBinStatistics()
         AsyncStorage.getItem('favorite').then((value) => {
             if (value == null) {
-                this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
+                this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
             } else {
                 this.setState({favorite: JSON.parse(value)})
             }
         })
         AsyncStorage.getItem('recent').then((value) => {
             if (value == null) {
-                this.setState({recent: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
+                this.setState({recent: []})
             } else {
                 this.setState({recent: JSON.parse(value)})
             }
@@ -120,18 +123,63 @@ export default class TrashApp extends Component {
         }
     }
 
+    handleBinSelect(bin) {
+        if (bin != -1) {
+            this.setState({
+                currentBin: bin
+            })
+        }
+    }
+
     resetAll() {
         this.setState({
-            currentPage: 0
+            currentPage: 0,
+            currentBin: 0
         })
     }
 
-    renderItem(id) {
-        return (
-            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleItemSelect(id)}>
-                <Text style={styles.itemName}>{id}</Text>
-            </TouchableOpacity>
-        )
+    setFavorite(index) {
+        let markers = this.state.favorite;
+        markers[index] = !this.state.favorite[index];
+        this.setState({
+            favorite: markers
+        });
+    }
+
+    doDispose(index) {
+        let markers = this.state.mostTrashedItem;
+        markers[index] = this.state.mostTrashedItem[index] + 1;
+        this.setState({
+            mostTrashedItem: markers
+        });
+        for (let i = 0; i < this.state.recent.length; i++) {
+            if (this.state.recent[i] == index) {
+                var array = this.state.recent
+                array.splice(i, 1);
+                this.setState({recent: array});
+            }
+        }
+        this.setState({recent: [...this.state.recent, this.state.currentPage]});
+    }
+
+    renderIcon() {
+        if (this.state.listMode == 'favorite') {
+            return <Icon name="md-star" size={30}/>
+        } else if (this.state.listMode == 'recent') {
+            return <Icon name="md-time" size={30}/>
+        } else if (this.state.listMode == 'most') {
+            return <Icon name="md-stats" size={30}/>
+        }
+    }
+
+    renderList(){
+        if (this.state.listMode == 'favorite') {
+            return <Icon name="md-star" size={30}/>
+        } else if (this.state.listMode == 'recent') {
+            return <Icon name="md-time" size={30}/>
+        } else if (this.state.listMode == 'most') {
+            return <Icon name="md-stats" size={30}/>
+        }
     }
 
     render() {
@@ -141,11 +189,23 @@ export default class TrashApp extends Component {
             renderTabBar={() => <CustomTabBar />}
         >
             <ScrollView tabLabel="md-home" style={styles.tabView}>
-                <View style={styles.card}>
-                    <Text>{content.favorite}</Text>
+                <View style={styles.pickerContainer}>
+                    {this.renderIcon()}
+                    <View style={styles.pickerStyle}>
+                        <Picker
+                            selectedValue={this.state.listMode}
+                            onValueChange={(itemValue, itemIndex) => this.setState({listMode: itemValue})}>
+                            <Picker.Item label={content.favorite}
+                                         value="favorite"/>
+                            <Picker.Item label={content.recent}
+                                         value="recent"/>
+                            <Picker.Item label={content.mostSelect}
+                                         value="most"/>
+                        </Picker>
+                    </View>
                 </View>
             </ScrollView>
-            <ScrollView tabLabel="md-search" style={styles.tabView}>
+            <ScrollView tabLabel="md-search" style={[styles.tabView,{flex:1}]}>
                 <View style={styles.backTabStyle}>
                     <TouchableOpacity
                         onPress={()=>this.handleItemSelect(content.items[this.state.currentPage].parentID)}>
@@ -153,13 +213,18 @@ export default class TrashApp extends Component {
                     </TouchableOpacity>
                     <Text>{content.items[this.state.currentPage].name}</Text>
                     {content.items[this.state.currentPage].status == 'category' ?
-                        <Icon name="md-arrow-back" color="#eee" size={30}/>
+                        <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
                         :
-                        [this.state.favorite[this.state.currentPage] == 1 ?
-                            <Icon name="md-star" color="#ffce00" size={30}/>
-                            :
-                            <Icon name="md-star-outline" size={30}/>
-                        ]}
+                        (this.state.favorite[this.state.currentPage] == 1 ?
+                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                    <Icon name="md-star" color="#ffce00" size={30}/>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                    <Icon name="md-star-outline" size={30}/>
+                                </TouchableOpacity>
+
+                        )}
                 </View>
                 {content.items[this.state.currentPage].status == 'category' ?
                     <GridView
@@ -167,31 +232,63 @@ export default class TrashApp extends Component {
                         itemWidth={100}
                         items={content.items[this.state.currentPage].childID}
                         style={styles.gridView}
-                        renderItem={item => this.renderItem(item)}
+                        renderItem={item =>
+                            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleItemSelect(item)}>
+                                <Text style={styles.itemName}>{content.items[item].name}</Text>
+                            </TouchableOpacity>
+                            }
                     />
                     :
-                    <View style={{flex:1}}>
-                        <ScrollView>
-                            <View style={styles.trashToBinBlockStyle}>
-                                <View style={styles.imageInBlock}></View>
-                                <Icon name="md-arrow-round-forward" size={30}/>
-                                <View style={styles.imageInBlock}></View>
-                            </View>
-                            <Text>Notes</Text>
-                            <Text>{content.items[this.state.currentPage].description}</Text>
-                        </ScrollView>
-                        <View>
-                            <TouchableOpacity>
-                                <Text>trash</Text>
-                            </TouchableOpacity>
+                    <View>
+                        <View style={styles.trashToBinBlockStyle}>
+                            <View style={styles.imageInBlock}></View>
+                            <Icon name="md-arrow-round-forward" size={30}/>
+                            <View style={styles.imageInBlock}></View>
                         </View>
+                        <TouchableOpacity style={styles.trashButtonStyle}
+                                          onPress={()=>this.doDispose(this.state.currentPage)}>
+                            <Text>Button</Text>
+                        </TouchableOpacity>
+                        <Text>{content.notes}</Text>
+                        <Text>{content.items[this.state.currentPage].description}</Text>
                     </View>
                 }
             </ScrollView>
             <ScrollView tabLabel="md-trash" style={styles.tabView}>
-                <View style={styles.card}>
-                    <Text>Messenger</Text>
+                <View style={styles.backTabStyle}>
+                    <TouchableOpacity
+                        onPress={()=>this.handleBinSelect(content.Bin[this.state.currentBin].parentID)}>
+                        <Icon name="md-arrow-back" size={30}/>
+                    </TouchableOpacity>
+                    <Text>{content.Bin[this.state.currentBin].name}</Text>
+                    <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
                 </View>
+                {content.Bin[this.state.currentBin].status == 'category' ?
+                    <GridView
+                        enableEmptySections={true}
+                        itemWidth={150}
+                        items={content.Bin[this.state.currentBin].childID}
+                        style={styles.gridView}
+                        renderItem={item =>
+                            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleBinSelect(item)}>
+                                <Text style={styles.itemName}>{item}</Text>
+                            </TouchableOpacity>
+                         }
+                    />
+                    :
+                    <View>
+                        <View style={styles.trashcanStyle}>
+                            <View style={styles.imageInBlock}></View>
+                            <Text>{content.Bin[this.state.currentBin].color}</Text>
+                        </View>
+                        <View>
+                            <Text>{content.item}</Text>
+                            {content.Bin[this.state.currentBin].dispose.map(item =>
+                                <Text key={item}>- {content.items[item].name}</Text>
+                            )}
+                        </View>
+                    </View>
+                }
             </ScrollView>
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
@@ -273,6 +370,27 @@ const styles = StyleSheet.create({
         padding: 50,
         margin: 30,
         alignSelf: 'center'
+    },
+    trashButtonStyle: {
+        flexDirection: 'row',
+        padding: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        justifyContent: 'center'
+    },
+    trashcanStyle: {
+        alignItems: 'center'
+    },
+    pickerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    pickerStyle: {
+        alignSelf: 'stretch',
+        marginLeft: 5,
+        marginRight: 5,
+        flex: 2.5
     },
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
