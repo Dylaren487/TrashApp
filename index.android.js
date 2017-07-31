@@ -12,9 +12,11 @@ import {
     ScrollView,
     AppRegistry,
     AsyncStorage,
-    TouchableOpacity
+    TouchableOpacity,
+    WebView
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Ionicons';
 import CustomTabBar from './CustomTabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import GridView from 'react-native-super-grid';
@@ -26,16 +28,21 @@ export default class TrashApp extends Component {
     constructor() {
         super();
         this.state = {
+            general: 0,
+            compostable: 0,
+            recycle: 0,
+            hazardous: 0,
             currentPage: 0,
-            favorite: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             recent: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             mostTrashedBin: [0, 0, 0, 0],
             language: 'en'
         }
+        this.handleBinStatistics()
         AsyncStorage.getItem('favorite').then((value) => {
             if (value == null) {
-                this.setState({favorite: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]})
+                this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
             } else {
                 this.setState({favorite: JSON.parse(value)})
             }
@@ -69,6 +76,25 @@ export default class TrashApp extends Component {
             }
         })
         this.fetchLanguage(this.state.language);
+    }
+
+    handleBinStatistics() {
+        var id = 3;
+        var secretid = 'Nw6X5T';
+
+        fetch('http://smartbin.devfunction.com/api/?team_id=' + id + '&secret=' + secretid)
+            .then((response) => response.json())
+            .then((responseJSON) => {
+                this.setState({
+                    general: JSON.parse(responseJSON.data.bin_statistics.general),
+                    compostable: JSON.parse(responseJSON.data.bin_statistics.compostable),
+                    recycle: JSON.parse(responseJSON.data.bin_statistics.recycle),
+                    hazardous: JSON.parse(responseJSON.data.bin_statistics.hazardous),
+                });
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
     }
 
     fetchLanguage(lang) {
@@ -120,8 +146,21 @@ export default class TrashApp extends Component {
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-search" style={styles.tabView}>
-                <TouchableOpacity
-                    onPress={()=>this.handleItemSelect(content.items[this.state.currentPage].parentID)}><Text>Back{this.state.currentPage}</Text></TouchableOpacity>
+                <View style={styles.backTabStyle}>
+                    <TouchableOpacity
+                        onPress={()=>this.handleItemSelect(content.items[this.state.currentPage].parentID)}>
+                        <Icon name="md-arrow-back" size={30}/>
+                    </TouchableOpacity>
+                    <Text>{content.items[this.state.currentPage].name}</Text>
+                    {content.items[this.state.currentPage].status == 'category' ?
+                        <Icon name="md-arrow-back" color="#eee" size={30}/>
+                        :
+                        [this.state.favorite[this.state.currentPage] == 1 ?
+                            <Icon name="md-star" color="#ffce00" size={30}/>
+                            :
+                            <Icon name="md-star-outline" size={30}/>
+                        ]}
+                </View>
                 {content.items[this.state.currentPage].status == 'category' ?
                     <GridView
                         enableEmptySections={true}
@@ -131,9 +170,23 @@ export default class TrashApp extends Component {
                         renderItem={item => this.renderItem(item)}
                     />
                     :
-                    <View>
-
-                    </View>}
+                    <View style={{flex:1}}>
+                        <ScrollView>
+                            <View style={styles.trashToBinBlockStyle}>
+                                <View style={styles.imageInBlock}></View>
+                                <Icon name="md-arrow-round-forward" size={30}/>
+                                <View style={styles.imageInBlock}></View>
+                            </View>
+                            <Text>Notes</Text>
+                            <Text>{content.items[this.state.currentPage].description}</Text>
+                        </ScrollView>
+                        <View>
+                            <TouchableOpacity>
+                                <Text>trash</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                }
             </ScrollView>
             <ScrollView tabLabel="md-trash" style={styles.tabView}>
                 <View style={styles.card}>
@@ -142,7 +195,9 @@ export default class TrashApp extends Component {
             </ScrollView>
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
-                    <Text>Notifications</Text>
+                    <WebView
+                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=640&h=480&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":'+this.state.general+'}]},{"c":[{"v":"Compostable"},{"v":'+this.state.compostable+'}]},{"c":[{"v":"Recycle"},{"v":'+this.state.recycle+'}]},{"c":[{"v":"Hazardous"},{"v":'+this.state.hazardous+'}]}]},"options":{"width":640,"height":480},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                    />
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-settings" style={styles.tabView}>
@@ -194,6 +249,30 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 12,
         color: '#fff',
+    },
+    backTabStyle: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+    },
+    trashToBinBlockStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#ccc',
+        borderRadius: 20,
+        marginTop: 20,
+        marginBottom: 20
+    },
+    imageInBlock: {
+        flex: 1,
+        backgroundColor: '#555555',
+        padding: 50,
+        margin: 30,
+        alignSelf: 'center'
     },
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
