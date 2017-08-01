@@ -29,6 +29,8 @@ const CustomTabBar = React.createClass({
             icon.setNativeProps({
                 style: {
                     color: this.iconColor(progress),
+                    borderBottomWidth: 2,
+                    borderBottomColor:this.borderColor(progress),
                 },
             });
         });
@@ -36,9 +38,15 @@ const CustomTabBar = React.createClass({
 
     //color between rgb(59,89,152) and rgb(204,204,204)
     iconColor(progress) {
-        const red = 59 + (204 - 59) * progress;
-        const green = 89 + (204 - 89) * progress;
-        const blue = 152 + (204 - 152) * progress;
+        const red = 85 + (204 - 85) * progress;
+        const green = 85 + (204 - 85) * progress;
+        const blue = 85 + (204 - 85) * progress;
+        return `rgb(${red}, ${green}, ${blue})`;
+    },
+    borderColor(progress) {
+        const red = 85 + (250 - 85) * progress;
+        const green = 85 + (250 - 85) * progress;
+        const blue = 85 + (250- 85) * progress;
         return `rgb(${red}, ${green}, ${blue})`;
     },
 
