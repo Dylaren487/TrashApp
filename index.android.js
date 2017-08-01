@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
@@ -40,42 +40,43 @@ export default class TrashApp extends Component {
             recent: [],
             mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             mostTrashedBin: [0, 0, 0, 0],
-            language: 'en'
+            language: 'en',
+            flag: true,
         }
         this.handleBinStatistics()
         AsyncStorage.getItem('favorite').then((value) => {
             if (value == null) {
-                this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
+                this.setState({ favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] })
             } else {
-                this.setState({favorite: JSON.parse(value)})
+                this.setState({ favorite: JSON.parse(value) })
             }
         })
         AsyncStorage.getItem('recent').then((value) => {
             if (value == null) {
-                this.setState({recent: []})
+                this.setState({ recent: [] })
             } else {
-                this.setState({recent: JSON.parse(value)})
+                this.setState({ recent: JSON.parse(value) })
             }
         })
         AsyncStorage.getItem('mostTrashedItem').then((value) => {
             if (value == null) {
-                this.setState({mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
+                this.setState({ mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] })
             } else {
-                this.setState({mostTrashedItem: JSON.parse(value)})
+                this.setState({ mostTrashedItem: JSON.parse(value) })
             }
         })
         AsyncStorage.getItem('mostTrashedBin').then((value) => {
             if (value == null) {
-                this.setState({mostTrashedBin: [0, 0, 0, 0]})
+                this.setState({ mostTrashedBin: [0, 0, 0, 0] })
             } else {
-                this.setState({mostTrashedBin: JSON.parse(value)})
+                this.setState({ mostTrashedBin: JSON.parse(value) })
             }
         })
         AsyncStorage.getItem('languageSource').then((value) => {
             if (value == null) {
-                this.setState({languageSource: 'en'})
+                this.setState({ languageSource: 'en' })
             } else {
-                this.setState({languageSource: JSON.parse(value)})
+                this.setState({ languageSource: JSON.parse(value) })
             }
         })
         this.fetchLanguage(this.state.language);
@@ -103,8 +104,14 @@ export default class TrashApp extends Component {
     fetchLanguage(lang) {
         if (lang == 'en') {
             content = require('./lang/lang.en.json')
+            this.setState({
+                flag:true
+            })
         } else if (lang == 'th') {
             content = require('./lang/lang.th.json')
+            this.setState({
+                flag:false
+            })
         }
     }
 
@@ -156,36 +163,36 @@ export default class TrashApp extends Component {
             if (this.state.recent[i] == index) {
                 var array = this.state.recent
                 array.splice(i, 1);
-                this.setState({recent: array});
+                this.setState({ recent: array });
             }
         }
-        this.setState({recent: [...this.state.recent, this.state.currentPage]});
+        this.setState({ recent: [...this.state.recent, this.state.currentPage] });
     }
 
     renderIcon() {
         if (this.state.listMode == 'favorite') {
-            return <Icon name="md-star" size={30}/>
+            return <Icon name="md-star" size={30} />
         } else if (this.state.listMode == 'recent') {
-            return <Icon name="md-time" size={30}/>
+            return <Icon name="md-time" size={30} />
         } else if (this.state.listMode == 'most') {
-            return <Icon name="md-stats" size={30}/>
+            return <Icon name="md-stats" size={30} />
         }
     }
 
-    renderList(){
+    renderList() {
         if (this.state.listMode == 'favorite') {
-            return <Icon name="md-star" size={30}/>
+            return <Icon name="md-star" size={30} />
         } else if (this.state.listMode == 'recent') {
-            return <Icon name="md-time" size={30}/>
+            return <Icon name="md-time" size={30} />
         } else if (this.state.listMode == 'most') {
-            return <Icon name="md-stats" size={30}/>
+            return <Icon name="md-stats" size={30} />
         }
     }
 
     render() {
         return <ScrollableTabView
             initialPage={1}
-            onChangeTab={()=>this.resetAll()}
+            onChangeTab={() => this.resetAll()}
             renderTabBar={() => <CustomTabBar />}
         >
             <ScrollView tabLabel="md-home" style={styles.tabView}>
@@ -194,35 +201,35 @@ export default class TrashApp extends Component {
                     <View style={styles.pickerStyle}>
                         <Picker
                             selectedValue={this.state.listMode}
-                            onValueChange={(itemValue, itemIndex) => this.setState({listMode: itemValue})}>
+                            onValueChange={(itemValue, itemIndex) => this.setState({ listMode: itemValue })}>
                             <Picker.Item label={content.favorite}
-                                         value="favorite"/>
+                                value="favorite" />
                             <Picker.Item label={content.recent}
-                                         value="recent"/>
+                                value="recent" />
                             <Picker.Item label={content.mostSelect}
-                                         value="most"/>
+                                value="most" />
                         </Picker>
                     </View>
                 </View>
             </ScrollView>
-            <ScrollView tabLabel="md-search" style={[styles.tabView,{flex:1}]}>
+            <ScrollView tabLabel="md-search" style={[styles.tabView, { flex: 1 }]}>
                 <View style={styles.backTabStyle}>
                     <TouchableOpacity
-                        onPress={()=>this.handleItemSelect(content.items[this.state.currentPage].parentID)}>
-                        <Icon name="md-arrow-back" size={30}/>
+                        onPress={() => this.handleItemSelect(content.items[this.state.currentPage].parentID)}>
+                        <Icon name="md-arrow-back" size={30} />
                     </TouchableOpacity>
                     <Text>{content.items[this.state.currentPage].name}</Text>
                     {content.items[this.state.currentPage].status == 'category' ?
-                        <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                        <Icon name="md-arrow-back" color="#F7F7F7" size={30} />
                         :
                         (this.state.favorite[this.state.currentPage] == 1 ?
-                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
-                                    <Icon name="md-star" color="#ffce00" size={30}/>
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
-                                    <Icon name="md-star-outline" size={30}/>
-                                </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.setFavorite(this.state.currentPage)}>
+                                <Icon name="md-star" color="#ffce00" size={30} />
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity onPress={() => this.setFavorite(this.state.currentPage)}>
+                                <Icon name="md-star-outline" size={30} />
+                            </TouchableOpacity>
 
                         )}
                 </View>
@@ -233,20 +240,20 @@ export default class TrashApp extends Component {
                         items={content.items[this.state.currentPage].childID}
                         style={styles.gridView}
                         renderItem={item =>
-                            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleItemSelect(item)}>
+                            <TouchableOpacity style={styles.itemContainer} onPress={() => this.handleItemSelect(item)}>
                                 <Text style={styles.itemName}>{content.items[item].name}</Text>
                             </TouchableOpacity>
-                            }
+                        }
                     />
                     :
                     <View>
                         <View style={styles.trashToBinBlockStyle}>
                             <View style={styles.imageInBlock}></View>
-                            <Icon name="md-arrow-round-forward" size={30}/>
+                            <Icon name="md-arrow-round-forward" size={30} />
                             <View style={styles.imageInBlock}></View>
                         </View>
                         <TouchableOpacity style={styles.trashButtonStyle}
-                                          onPress={()=>this.doDispose(this.state.currentPage)}>
+                            onPress={() => this.doDispose(this.state.currentPage)}>
                             <Text>Button</Text>
                         </TouchableOpacity>
                         <Text>{content.notes}</Text>
@@ -257,11 +264,11 @@ export default class TrashApp extends Component {
             <ScrollView tabLabel="md-trash" style={styles.tabView}>
                 <View style={styles.backTabStyle}>
                     <TouchableOpacity
-                        onPress={()=>this.handleBinSelect(content.Bin[this.state.currentBin].parentID)}>
-                        <Icon name="md-arrow-back" size={30}/>
+                        onPress={() => this.handleBinSelect(content.Bin[this.state.currentBin].parentID)}>
+                        <Icon name="md-arrow-back" size={30} />
                     </TouchableOpacity>
                     <Text>{content.Bin[this.state.currentBin].name}</Text>
-                    <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                    <Icon name="md-arrow-back" color="#F7F7F7" size={30} />
                 </View>
                 {content.Bin[this.state.currentBin].status == 'category' ?
                     <GridView
@@ -270,10 +277,10 @@ export default class TrashApp extends Component {
                         items={content.Bin[this.state.currentBin].childID}
                         style={styles.gridView}
                         renderItem={item =>
-                            <TouchableOpacity style={styles.itemContainer} onPress={()=>this.handleBinSelect(item)}>
+                            <TouchableOpacity style={styles.itemContainer} onPress={() => this.handleBinSelect(item)}>
                                 <Text style={styles.itemName}>{item}</Text>
                             </TouchableOpacity>
-                         }
+                        }
                     />
                     :
                     <View>
@@ -302,11 +309,13 @@ export default class TrashApp extends Component {
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-settings" style={styles.tabView}>
-                <View style={styles.card}>
-                    <Text>Other nav</Text>
-                    <TouchableOpacity onPress={()=>this.changeLanguage('en')}><Text>EN</Text></TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this.changeLanguage('th')}><Text>TH</Text></TouchableOpacity>
-                </View>
+                <Text style={styles.menuView}>Clear history</Text>
+                {this.state.flag==false &&
+                    <TouchableOpacity onPress={() => this.changeLanguage('en')}><Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text></TouchableOpacity>
+                }
+                {this.state.flag==true &&
+                    <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
+                }
             </ScrollView>
         </ScrollableTabView>;
     }
@@ -326,7 +335,7 @@ const styles = StyleSheet.create({
         height: 300,
         padding: 15,
         shadowColor: '#ccc',
-        shadowOffset: {width: 2, height: 2,},
+        shadowOffset: { width: 2, height: 2, },
         shadowOpacity: 0.5,
         shadowRadius: 3,
     },
@@ -395,6 +404,11 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         flex: 2.5
+    },
+    menuView: {
+        flex: 1,
+        padding: 10,
+        borderBottomWidth: 1,
     },
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
