@@ -105,12 +105,12 @@ export default class TrashApp extends Component {
         if (lang == 'en') {
             content = require('./lang/lang.en.json')
             this.setState({
-                flag:true
+                flag: true
             })
         } else if (lang == 'th') {
             content = require('./lang/lang.th.json')
             this.setState({
-                flag:false
+                flag: false
             })
         }
     }
@@ -299,7 +299,12 @@ export default class TrashApp extends Component {
             </ScrollView>
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
-                    <Text>Waste disposal statistics</Text>
+                    {this.state.flag == true &&
+                        <Text>Waste disposal statistics</Text>
+                    }
+                    {this.state.flag == false &&
+                        <Text>สถิติการทิ้งขยะ</Text>
+                    }
                     <WebView
                         source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
                         scalesPageToFit={true}
@@ -309,11 +314,16 @@ export default class TrashApp extends Component {
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-settings" style={styles.tabView}>
-                <Text style={styles.menuView}>Clear history</Text>
-                {this.state.flag==false &&
+                {this.state.flag == true &&
+                    <Text style={styles.menuView}>Clear history</Text>
+                }
+                {this.state.flag == false &&
+                    <Text style={styles.menuView}>ล้างข้อมูล</Text>
+                }
+                {this.state.flag == false &&
                     <TouchableOpacity onPress={() => this.changeLanguage('en')}><Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text></TouchableOpacity>
                 }
-                {this.state.flag==true &&
+                {this.state.flag == true &&
                     <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
                 }
             </ScrollView>
