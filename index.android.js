@@ -300,13 +300,33 @@ export default class TrashApp extends Component {
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
                     {this.state.flag == true &&
-                        <Text>Waste disposal statistics</Text>
+                        <Text style={styles.statisticsHeader}>Waste disposal statistics</Text>
                     }
                     {this.state.flag == false &&
-                        <Text>สถิติการทิ้งขยะ</Text>
+                        <Text style={styles.statisticsHeader}>สถิติการทิ้งขยะ</Text>
+                    }
+                    {this.state.flag == true &&
+                        <Text>Global Statistics</Text>
+                    }
+                    {this.state.flag == false &&
+                        <Text>สถิติสากล</Text>
                     }
                     <WebView
                         source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                        scalesPageToFit={true}
+                        automaticallyAdjustContentInsets={true}
+                        scrollEnabled={false}
+                    />
+                </View>
+                <View style={styles.card}>
+                    {this.state.flag == true &&
+                        <Text>My Statistics</Text>
+                    }
+                    {this.state.flag == false &&
+                        <Text>สถิติของฉัน</Text>
+                    }
+                    <WebView
+                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501569339624#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"Genral"},{"v":'+this.state.mostTrashedBin[0]+'}]},{"c":[{"v":"Compostable"},{"v":'+this.state.mostTrashedBin[1]+'}]},{"c":[{"v":"Recycle"},{"v":'+this.state.mostTrashedBin[2]+'}]},{"c":[{"v":"Hazardous"},{"v":'+this.state.mostTrashedBin[3]+'}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
                         scalesPageToFit={true}
                         automaticallyAdjustContentInsets={true}
                         scrollEnabled={false}
@@ -326,6 +346,7 @@ export default class TrashApp extends Component {
                 {this.state.flag == true &&
                     <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
                 }
+                <Text>{this.state.mostTrashedBin[0]}</Text>
             </ScrollView>
         </ScrollableTabView>;
     }
@@ -420,5 +441,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
     },
+    statisticsHeader:{
+        fontSize:18
+    }
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
