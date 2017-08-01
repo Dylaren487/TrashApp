@@ -346,7 +346,6 @@ export default class TrashApp extends Component {
                 {this.state.flag == true &&
                     <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
                 }
-                <Text>{this.state.mostTrashedBin[0]}</Text>
             </ScrollView>
         </ScrollableTabView>;
     }
