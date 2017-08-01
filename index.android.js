@@ -292,8 +292,12 @@ export default class TrashApp extends Component {
             </ScrollView>
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
+                    <Text>Waste disposal statistics</Text>
                     <WebView
-                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=640&h=480&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":'+this.state.general+'}]},{"c":[{"v":"Compostable"},{"v":'+this.state.compostable+'}]},{"c":[{"v":"Recycle"},{"v":'+this.state.recycle+'}]},{"c":[{"v":"Hazardous"},{"v":'+this.state.hazardous+'}]}]},"options":{"width":640,"height":480},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                        scalesPageToFit={true}
+                        automaticallyAdjustContentInsets={true}
+                        scrollEnabled={false}
                     />
                 </View>
             </ScrollView>
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: 'rgba(0,0,0,0.1)',
         margin: 5,
-        height: 150,
+        height: 300,
         padding: 15,
         shadowColor: '#ccc',
         shadowOffset: {width: 2, height: 2,},
