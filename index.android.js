@@ -41,7 +41,9 @@ export default class TrashApp extends Component {
             mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             mostTrashedBin: [0, 0, 0, 0],
             language: 'en',
-            flag: true,
+            langFlag: true,
+            staticTab: true,
+
         }
         this.handleBinStatistics()
         AsyncStorage.getItem('favorite').then((value) => {
@@ -105,12 +107,24 @@ export default class TrashApp extends Component {
         if (lang == 'en') {
             content = require('./lang/lang.en.json')
             this.setState({
-                flag: true
+                langFlag: true
             })
         } else if (lang == 'th') {
             content = require('./lang/lang.th.json')
             this.setState({
-                flag: false
+                langFlag: false
+            })
+        }
+    }
+
+    changeTab(tab) {
+        if (tab == 'gol') {
+            this.setState({
+                staticTab: true
+            })
+        } else if (tab == 'lo') {
+            this.setState({
+                staticTab: false
             })
         }
     }
@@ -283,7 +297,7 @@ export default class TrashApp extends Component {
                         }
                     />
                     :
-                    <View>
+                    <View style={{alignSelf:'center'}}>
                         <View style={styles.trashcanStyle}>
                             <View style={styles.imageInBlock}></View>
                             <Text>{content.Bin[this.state.currentBin].color}</Text>
@@ -299,51 +313,63 @@ export default class TrashApp extends Component {
             </ScrollView>
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
-                    {this.state.flag == true &&
+                    <View style={styles.tabStyle}>
+                        <View style={this.state.staticTab==true?{borderBottomWidth: 1}:{}}>
+                        {this.state.langFlag == true &&
+                            <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>Global Statistics</Text></TouchableOpacity>
+                        }
+                        {this.state.langFlag == false &&
+                            <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>สถิติสากล</Text></TouchableOpacity>
+                        }
+                        </View>
+                        <Text style={{fontSize:18, padding:2, margin: 2}}>|</Text>
+                        <View style={this.state.staticTab==false?{borderBottomWidth: 1}:{}}>
+                        {this.state.langFlag == true &&
+                            <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>My Statistics</Text></TouchableOpacity>
+                        }
+                        {this.state.langFlag == false &&
+                            <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>สถิติสาของฉัน</Text></TouchableOpacity>
+                        }
+                        </View>
+                    </View>
+                    {this.state.langFlag == true &&
                         <Text style={styles.statisticsHeader}>Waste disposal statistics</Text>
                     }
-                    {this.state.flag == false &&
+                    {this.state.langFlag == false &&
                         <Text style={styles.statisticsHeader}>สถิติการทิ้งขยะ</Text>
                     }
-                    {this.state.flag == true &&
-                        <Text>Global Statistics</Text>
+                    {this.state.staticTab == true &&
+                        <WebView
+                            source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                            scalesPageToFit={true}
+                            automaticallyAdjustContentInsets={true}
+                            scrollEnabled={false}
+                        />
                     }
-                    {this.state.flag == false &&
-                        <Text>สถิติสากล</Text>
+                    {this.state.staticTab == false &&
+                        <WebView
+                            source={{ uri: 'http://charts.hohli.com/embed.html?created=1501569339624#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"Genral"},{"v":' + this.state.mostTrashedBin[0] + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.mostTrashedBin[1] + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.mostTrashedBin[2] + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.mostTrashedBin[3] + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }} scalesPageToFit={true}
+                            scalesPageToFit={true}
+                            automaticallyAdjustContentInsets={true}
+                            scrollEnabled={false}
+                        />
                     }
-                    <WebView
-                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
-                        scalesPageToFit={true}
-                        automaticallyAdjustContentInsets={true}
-                        scrollEnabled={false}
-                    />
-                </View>
-                <View style={styles.card}>
-                    {this.state.flag == true &&
-                        <Text>My Statistics</Text>
-                    }
-                    {this.state.flag == false &&
-                        <Text>สถิติของฉัน</Text>
-                    }
-                    <WebView
-                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501569339624#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"Genral"},{"v":'+this.state.mostTrashedBin[0]+'}]},{"c":[{"v":"Compostable"},{"v":'+this.state.mostTrashedBin[1]+'}]},{"c":[{"v":"Recycle"},{"v":'+this.state.mostTrashedBin[2]+'}]},{"c":[{"v":"Hazardous"},{"v":'+this.state.mostTrashedBin[3]+'}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
-                        scalesPageToFit={true}
-                        automaticallyAdjustContentInsets={true}
-                        scrollEnabled={false}
-                    />
                 </View>
             </ScrollView>
             <ScrollView tabLabel="md-settings" style={styles.tabView}>
-                {this.state.flag == true &&
+                <View style={styles}>
+
+                </View>
+                {this.state.langFlag == true &&
                     <Text style={styles.menuView}>Clear history</Text>
                 }
-                {this.state.flag == false &&
+                {this.state.langFlag == false &&
                     <Text style={styles.menuView}>ล้างข้อมูล</Text>
                 }
-                {this.state.flag == false &&
+                {this.state.langFlag == false &&
                     <TouchableOpacity onPress={() => this.changeLanguage('en')}><Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text></TouchableOpacity>
                 }
-                {this.state.flag == true &&
+                {this.state.langFlag == true &&
                     <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
                 }
             </ScrollView>
@@ -362,7 +388,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: 'rgba(0,0,0,0.1)',
         margin: 5,
-        height: 280,
+        height: 320,
         padding: 15,
         shadowColor: '#ccc',
         shadowOffset: { width: 2, height: 2, },
@@ -440,8 +466,18 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
     },
-    statisticsHeader:{
-        fontSize:18
-    }
+    statisticsHeader: {
+        fontSize: 18,
+        alignSelf: 'center'
+    },
+    tabStyle: {
+        flexDirection: 'row',
+        alignSelf: 'center'
+    },
+    changeView: {
+        fontSize: 18,
+        padding: 2,
+        margin: 2,
+    },
 });
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
