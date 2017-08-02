@@ -1,4 +1,4 @@
-package com.trashapp;
+package com.trashure;
 
 import com.facebook.react.ReactActivity;
 

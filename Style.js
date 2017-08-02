@@ -138,4 +138,24 @@ module.exports = StyleSheet.create({
         padding: 2,
         margin: 2,
     },
+    settingCategoryStyle:{
+        borderBottomWidth:2,
+        borderColor:"#ccc"
+    },
+    settingCategoryTextStyle:{
+        marginBottom:10
+    },
+    settingSubcategoryWrapperStyle:{
+        flexDirection:'row',
+        alignItems:'center',
+        height:50
+    },
+    settingSubcategoryStyle:{
+        flex:5,
+        borderTopWidth:1,
+        borderColor:"#ccc",
+        height:50,
+        justifyContent:'center'
+    }
+
 })

@@ -49,13 +49,6 @@ export default class TrashApp extends Component {
             staticTab: true,
         }
         this.handleBinStatistics()
-        AsyncStorage.getItem('language').then((value) => {
-            if (value == null) {
-                this.setState({language: 'en'})
-            } else {
-                this.setState({language: value})
-            }
-        })
         AsyncStorage.getItem('favorite').then((value) => {
             if (value == null) {
                 this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
@@ -99,10 +92,6 @@ export default class TrashApp extends Component {
             }
         })
         this.fetchLanguage(this.state.language);
-    }
-
-    componentDidMount() {
-        this.fetchLanguage(this.state.language)
     }
 
     handleBinStatistics() {
@@ -330,7 +319,7 @@ export default class TrashApp extends Component {
             )
         } else if (this.state.listMode == 'recent') {
             return this.state.recent.map(value =>
-                <TouchableOpacity key={value} style={styles.listBlock}>
+                <TouchableOpacity key={value} style={styles.listBlock} onPress={()=>this.showTrashFromHome(value)}>
                   <View
                       style={{height:55,width:55,borderWidth:1,borderColor:'#ccc',backgroundColor:'#fff',marginTop:5,marginBottom:5,marginLeft:10,marginRight:10}}>
                     <View style={{flex:1}}>
@@ -343,7 +332,8 @@ export default class TrashApp extends Component {
             )
         } else if (this.state.listMode == 'most') {
             return this.state.mostTrashedItem.map(value =>
-                <TouchableOpacity key={value.id} style={styles.listBlock}>
+                <TouchableOpacity key={value.id} style={styles.listBlock}
+                                  onPress={()=>this.showTrashFromHome(value.id)}>
                   <View
                       style={{height:55,width:55,borderWidth:1,borderColor:'#ccc',backgroundColor:'#fff',marginTop:5,marginBottom:5,marginLeft:10,marginRight:10}}>
                     <View style={{flex:1}}>
@@ -466,7 +456,7 @@ export default class TrashApp extends Component {
                     :
                     <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
                 }
-              <Text>{content.default.items[this.state.currentPage].name}</Text>
+              <Text>{content.default.items[this.state.currentPage].header}</Text>
                 {content.default.items[this.state.currentPage].status == 'category' ?
                     <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
                     :
@@ -579,29 +569,16 @@ export default class TrashApp extends Component {
             <View style={styles.card}>
               <View style={styles.tabStyle}>
                 <View style={this.state.staticTab==true?{borderBottomWidth: 1,borderBottomColor:'#ccc'}:{}}>
-                    {this.state.langFlag == true &&
-                    <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>Global Statistics</Text></TouchableOpacity>
-                    }
-                    {this.state.langFlag == false &&
-                    <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>สถิติสากล</Text></TouchableOpacity>
-                    }
+                  <TouchableOpacity onPress={() => this.changeTab('gol')}><Text
+                      style={styles.changeView}>{content.default.globalStat}</Text></TouchableOpacity>
                 </View>
                 <Text style={{fontSize:18, padding:2, margin: 2}}>|</Text>
                 <View style={this.state.staticTab==false?{borderBottomWidth: 1,borderBottomColor:'#ccc'}:{}}>
-                    {this.state.langFlag == true &&
-                    <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>My Statistics</Text></TouchableOpacity>
-                    }
-                    {this.state.langFlag == false &&
-                    <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>สถิติของฉัน</Text></TouchableOpacity>
-                    }
+                  <TouchableOpacity onPress={() => this.changeTab('lo')}><Text
+                      style={styles.changeView}>{content.default.localStat}</Text></TouchableOpacity>
                 </View>
               </View>
-                {this.state.langFlag == true &&
-                <Text style={styles.statisticsHeader}>Waste disposal statistics</Text>
-                }
-                {this.state.langFlag == false &&
-                <Text style={styles.statisticsHeader}>สถิติการทิ้งขยะ</Text>
-                }
+              <Text style={styles.statisticsHeader}>{content.default.wasteStat}</Text>
                 {this.state.staticTab == true &&
                 <WebView
                     source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
@@ -653,26 +630,37 @@ export default class TrashApp extends Component {
             {/* #5 tab settings*/}
 
           <ScrollView tabLabel="md-settings" style={styles.tabView}>
-              {this.state.language == 'en' &&
-              <TouchableOpacity onPress={() => this.deleteLocal()}>
-                <Text style={styles.menuView}>Clear history</Text>
+            <View style={styles.settingCategoryStyle}>
+              <Text style={styles.settingCategoryTextStyle}>{content.default.history}</Text>
+              <TouchableOpacity style={styles.settingSubcategoryWrapperStyle}
+                                onPress={() => this.deleteLocal()}>
+                <View style={{flex:1,alignItems:'center'}}>
+                  <Icon name="md-refresh-circle" size={30}/>
+                </View>
+                <View style={styles.settingSubcategoryStyle}>
+                  <Text>{content.default.clearHistory}</Text>
+                </View>
               </TouchableOpacity>
-              }
-              {this.state.language == 'th' &&
-              <TouchableOpacity onPress={() => this.deleteLocal()}>
-                <Text style={styles.menuView}>ล้างข้อมูล</Text>
-              </TouchableOpacity>
-              }
-              {this.state.language == 'th' &&
-              <TouchableOpacity onPress={() => this.changeLanguage('en')}>
-                <Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text>
-              </TouchableOpacity>
-              }
-              {this.state.language == 'en' &&
-              <TouchableOpacity onPress={() => this.changeLanguage('th')}>
-                <Text style={styles.menuView}>Change to thai</Text>
-              </TouchableOpacity>
-              }
+            </View>
+            <View style={styles.settingCategoryStyle}>
+              <Text style={styles.settingCategoryTextStyle}>{content.default.language}</Text>
+              <View
+                  style={styles.settingSubcategoryWrapperStyle}>
+                <View style={{flex:1,alignItems:'center'}}>
+                  <Icon name="md-globe" size={30}/>
+                </View>
+                <View style={styles.settingSubcategoryStyle}>
+                  <Picker style={{flex: 1}}
+                          selectedValue={this.state.language}
+                          onValueChange={(itemValue, itemIndex) => this.changeLanguage(itemValue)}>
+                    <Picker.Item label="English"
+                                 value="en"/>
+                    <Picker.Item label="ภาษาไทย"
+                                 value="th"/>
+                  </Picker>
+                </View>
+              </View>
+            </View>
           </ScrollView>
         </ScrollableTabView>;
     }

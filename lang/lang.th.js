@@ -2,7 +2,8 @@ export default{
   "items": [
     {
       "id": 0,
-      "name": "",
+      "header":"ประเภทของขยะ",
+      "name": "ประเภทของขยะ",
       "description": "ประเภทขยะ",
        "bin":0,
       "parentID":"-1",
@@ -21,6 +22,7 @@ export default{
     },
     {
       "id": 1,
+      "header":"พลาสติก",
       "name": "พลาสติก",
       "description": "-",
        "bin":0,
@@ -42,6 +44,7 @@ export default{
     },
     {
       "id": 2,
+      "header":"เศษอาหาร",
       "name": "เศษอาหาร",
       "description":"-",
       "bin":3,
@@ -53,6 +56,7 @@ export default{
     },
     {
       "id": 3,
+      "header":"ผ้า",
       "name": "ผ้า",
       "description": "-",
       "bin":1,
@@ -63,6 +67,7 @@ export default{
     },
     {
       "id": 4,
+      "header":"กระดาษ",
       "name":"กระดาษ",
       "description": "-",
       "bin":0,
@@ -79,6 +84,7 @@ export default{
     },
     {
       "id": 5,
+      "header":"โฟม",
       "name":"โฟม",
       "description":"-",
       "bin":1,
@@ -89,6 +95,7 @@ export default{
     },
     {
       "id": 6,
+      "header":"แก้ว",
       "name":"แก้ว",
       "description": "-",
       "bin":0,
@@ -102,6 +109,7 @@ export default{
     },
     {
       "id": 7,
+      "header":"โลหะ",
       "name":"โลหะ",
       "description":"-",
       "bin":0,
@@ -115,6 +123,7 @@ export default{
     },
     {
       "id": 8,
+      "header":"ขยะอันตราย",
       "name": "ขยะอันตราย",
       "description":"-",
       "bin":0,
@@ -134,6 +143,7 @@ export default{
     },
     {
       "id": 9,
+      "header":"พลาสติก > ถุงพลาสติกใส่อาหาร",
       "name": "ถุงพลาสติกใส่อาหาร",
       "description": "ทำความสะอาดก่อนทิ้ง",
         "bin":1,
@@ -144,6 +154,7 @@ export default{
     },
     {
       "id": 10,
+      "header":"พลาสติก > ถุงพลาสติก",
       "name": "ถุงพลาสติก",
       "description": "ทำความสะอาดก่อนทิ้ง",
       "bin":2,
@@ -155,6 +166,7 @@ export default{
     },
     {
       "id": 11,
+      "header":"พลาสติก > หลอด",
       "name": "หลอด",
       "description": "ทำความสะอาดก่อนทิ้ง",
         "bin":1,
@@ -165,6 +177,7 @@ export default{
     },
     {
       "id": 12,
+      "header":"พลาสติก > ขวดพลาสติก",
       "name": "ขวดพลาสติก",
       "description": "ทำความสะอาดก่อนทิ้ง",
        "bin":2,
@@ -175,6 +188,7 @@ export default{
     },
     {
       "id": 13,
+      "header":"พลาสติก > แก้วพลาสติก",
       "name": "แก้วพลาสติก",
       "description": "ทำความสะอาดก่อนทิ้ง",
        "bin":2,
@@ -185,6 +199,7 @@ export default{
     },
     {
       "id": 14,
+      "header":"พลาสติก > ซองขนม",
       "name": "ซองขนม",
       "description": "ทำความสะอาดก่อนทิ้ง",
       "bin":1,
@@ -195,6 +210,7 @@ export default{
     },
     {
       "id": 15,
+      "header":"พลาสติก > กล่องอาหาร",
       "name": "กล่องอาหาร",
       "description": "ทำความสะอาดก่อนทิ้ง",
       "bin":1,
@@ -205,6 +221,7 @@ export default{
     },
     {
       "id": 16,
+      "header":"กระดาษ > กระดาษหนังสือพิมพ์",
       "name": "กระดาษหนังสือพิมพ์",
       "description":"ใช้เชือกมัดหนังสือพิมพ์เข้าด้วยกันก่อนทิ้ง ",
       "bin":2,
@@ -215,6 +232,7 @@ export default{
     },
     {
       "id": 17,
+      "header":"กระดาษ > นิตยสาร",
       "name": "นิตยสาร",
       "description": "ใช้เชือกมัดนิตยสารเข้าด้วยกันก่อนทิ้ง",
       "bin":2,
@@ -225,6 +243,7 @@ export default{
     },
     {
       "id": 18,
+      "header":"กระดาษ > กล่องกระดาษลัง",
       "name": "กล่องกระดาษลัง",
       "description": "พับให้เป็นแผ่นก่อนทิ้ง",
       "bin":2,
@@ -235,6 +254,7 @@ export default{
     },
     {
       "id": 19,
+      "header":"กระดาษ > กระดาษทิชชู้",
       "name": "กระดาษทิชชู",
       "description": "",
       "bin":2,
@@ -245,6 +265,7 @@ export default{
     },
     {
       "id": 20,
+      "header":"กระดาษ > กล่องนม",
       "name": "กล่องนม",
       "description": "ทำความสะอาดก่อนทิ้ง",
       "bin":2,
@@ -255,6 +276,7 @@ export default{
     },
     {
       "id": 21,
+      "header":"แก้ว > ขวดแก้ว",
       "name": "ขวดแก้ว",
       "description": "แยกฝาจีบออกจากขวดแก้ว",
       "bin":2,
@@ -265,6 +287,7 @@ export default{
     },
     {
       "id": 22,
+      "header":"แก้ว > เศษแก้ว",
       "name": "เศษแก้ว",
       "description": "ห่อเศษแก้วด้วยกระดาษหนังสือพิมพ์ก่อนทิ้ง",
       "bin":2,
@@ -275,6 +298,7 @@ export default{
     },
     {
       "id": 23,
+      "header":"โลหะ > กระป๋อง",
       "name": "กระป๋อง",
       "description": "ทำความสะอาดก่อนทิ้ง",
       "bin":2,
@@ -285,7 +309,7 @@ export default{
     },
     {
       "id": 24,
-      "name": "ฝาจีบ",
+      "name": "โลหะ > ฝาจีบ",
       "description": "-",
       "bin":2,
       "parentID": "7",
@@ -295,6 +319,7 @@ export default{
     },
     {
       "id": 25,
+      "header":"ขยะอันตราย > น้ำยาทำความสะอาด",
       "name": "น้ำยาทำความสะอาด",
       "description": "-",
       "bin":4,
@@ -305,6 +330,7 @@ export default{
     },
     {
       "id": 26,
+      "header":"ขยะอันตราย > ยาฆ่าแมลง",
       "name": "ยาฆ่าแมลง",
       "description": "-",
        "bin":4,
@@ -315,6 +341,7 @@ export default{
     },
     {
       "id": 27,
+      "header":"ขยะอันตราย > สเปรย์",
       "name": "สเปรย์",
       "description": "ใช้จนหมดและเจาะรูที่กระป๋องก่อนทิ้ง.",
        "bin":4,
@@ -325,6 +352,7 @@ export default{
     },
     {
       "id": 28,
+      "header":"ขยะอันตราย > ยาหมดอายุ",
       "name": "ยาหมดอายุ",
       "description": "-",
        "bin":4,
@@ -335,6 +363,7 @@ export default{
     },
     {
       "id": 29,
+      "header":"ขยะอันตราย > เครื่องสำอาง",
       "name": "เครื่องสำอาง",
       "description": "-",
        "bin":4,
@@ -345,6 +374,7 @@ export default{
     },
     {
       "id": 30,
+      "header":"ขยะอันตราย > ขวดน้ำมันเครื่อง",
       "name": "ขวดน้ำมันเครื่อง",
       "description": "ถ่ายน้ำมันเครื่องไปไว้ในภาชนะอื่นก่อนทิ้ง",
        "bin":4,
@@ -356,6 +386,7 @@ export default{
     {
       "id": 31,
       "name": "หลอดไฟ",
+      "header":"ขยะอันตราย > หลอดไฟ",
       "description": "ใส่หลอดไฟในถุงพลาสติกและห่อให้มิดชิดก่อนทิ้ง",
        "bin":4,
       "parentID": "8",
@@ -365,6 +396,7 @@ export default{
     },
     {
       "id": 32,
+      "header":"ขยะอันตราย > แบตเตอรี่",
       "name": "แบตเตอรี่",
       "description": "ใส่แบตเตอรี่ในถุงพลาสติกและห่อให้มิดชิดก่อนทิ้ง",
        "bin":4,
@@ -375,6 +407,7 @@ export default{
     },
      {
       "id": 33,
+      "header":"พลาสติก > ซองบะหมี่กึ่งสำเร็จรูป",
       "name": "ซองบะหมี่กึ่งสำเร็จรูป",
       "description": "-",
       "bin":1,
@@ -386,6 +419,7 @@ export default{
     },
     {
       "id": 34,
+      "header":"พลาสติก > ถ้วยบะหมี่กึ่งสำเร็จรูป",
       "name": "ถ้วยบะหมี่กึ่งสำเร็จรูป",
       "description": "-",
       "bin":1,
@@ -397,6 +431,7 @@ export default{
     },
     {
        "id": 35,
+       "header":"พลาสติก > ซองลูกอม",
       "name": "ซองลูกอม",
       "description": "-",
       "bin":1,
@@ -408,6 +443,7 @@ export default{
     },
      {
        "id": 36,
+       "header":"เศษอาหาร > เปลือกผลไม้",
       "name": "เปลือกผลไม้",
       "description": "-",
       "bin":1,
@@ -419,6 +455,7 @@ export default{
     },
     {
        "id": 37,
+       "header":"เศษอาหาร > เศษเนื้อ",
       "name": "เศษเนื้อ",
       "description": "-",
       "bin":3,
@@ -493,5 +530,11 @@ export default{
   "item":"ประเภท",
   "quantity":"จำนวน",
   "notes":"คำแนะนำ",
-  "dispose":"ทิ้งขยะ"
+  "dispose":"ทิ้งขยะ",
+  "globalStat":"สถิติสากล",
+  "localStat":"สถิติของฉัน",
+  "wasteStat":"สถิติการทิ้งขยะ",
+  "history":"ประวัติ",
+  "clearHistory":"ล้างประวัติ",
+  "language":"ภาษา"
 }
