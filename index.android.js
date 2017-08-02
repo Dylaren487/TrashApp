@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
@@ -14,11 +14,12 @@ import {
     AsyncStorage,
     TouchableOpacity,
     WebView,
-    Picker
+    Picker,
+    Image
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
 import CustomTabBar from './CustomTabBar';
+import Icon from 'react-native-vector-icons/Ionicons';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import GridView from 'react-native-super-grid';
 
@@ -29,6 +30,7 @@ export default class TrashApp extends Component {
     constructor() {
         super();
         this.state = {
+            shortcut: false,
             listMode: 'favorite',
             general: 0,
             compostable: 0,
@@ -36,52 +38,71 @@ export default class TrashApp extends Component {
             hazardous: 0,
             currentPage: 0,
             currentBin: 0,
-            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             recent: [],
-            mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            mostTrashedItem: [],
             mostTrashedBin: [0, 0, 0, 0],
             language: 'en',
+            postTrash: [],
+            postBin: [0, 0, 0, 0],
             langFlag: true,
             staticTab: true,
-
         }
         this.handleBinStatistics()
+        AsyncStorage.getItem('language').then((value) => {
+            if (value == null) {
+                this.setState({language: 'en'})
+            } else {
+                this.setState({language: value})
+            }
+        })
         AsyncStorage.getItem('favorite').then((value) => {
             if (value == null) {
-                this.setState({ favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] })
+                this.setState({favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
             } else {
-                this.setState({ favorite: JSON.parse(value) })
+                this.setState({favorite: JSON.parse(value)})
             }
         })
         AsyncStorage.getItem('recent').then((value) => {
             if (value == null) {
-                this.setState({ recent: [] })
+                this.setState({recent: []})
             } else {
-                this.setState({ recent: JSON.parse(value) })
+                this.setState({recent: JSON.parse(value)})
             }
         })
         AsyncStorage.getItem('mostTrashedItem').then((value) => {
             if (value == null) {
-                this.setState({ mostTrashedItem: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] })
+                this.setState({mostTrashedItem: []})
             } else {
-                this.setState({ mostTrashedItem: JSON.parse(value) })
+                this.setState({mostTrashedItem: JSON.parse(value)})
             }
         })
         AsyncStorage.getItem('mostTrashedBin').then((value) => {
             if (value == null) {
-                this.setState({ mostTrashedBin: [0, 0, 0, 0] })
+                this.setState({mostTrashedBin: [0, 0, 0, 0]})
             } else {
-                this.setState({ mostTrashedBin: JSON.parse(value) })
+                this.setState({mostTrashedBin: JSON.parse(value)})
             }
         })
-        AsyncStorage.getItem('languageSource').then((value) => {
+        AsyncStorage.getItem('postTrash').then((value) => {
             if (value == null) {
-                this.setState({ languageSource: 'en' })
+                this.setState({postTrash: []})
             } else {
-                this.setState({ languageSource: JSON.parse(value) })
+                this.setState({postTrash: JSON.parse(value)})
+            }
+        })
+        AsyncStorage.getItem('postBin').then((value) => {
+            if (value == null) {
+                this.setState({postBin: [0, 0, 0, 0]})
+            } else {
+                this.setState({postBin: JSON.parse(value)})
             }
         })
         this.fetchLanguage(this.state.language);
+    }
+
+    componentDidMount() {
+        this.fetchLanguage(this.state.language)
     }
 
     handleBinStatistics() {
@@ -105,15 +126,9 @@ export default class TrashApp extends Component {
 
     fetchLanguage(lang) {
         if (lang == 'en') {
-            content = require('./lang/lang.en.json')
-            this.setState({
-                langFlag: true
-            })
+            content = require('./lang/lang.en')
         } else if (lang == 'th') {
-            content = require('./lang/lang.th.json')
-            this.setState({
-                langFlag: false
-            })
+            content = require('./lang/lang.th')
         }
     }
 
@@ -130,6 +145,7 @@ export default class TrashApp extends Component {
     }
 
     changeLanguage(lang) {
+        AsyncStorage.setItem('language', lang)
         this.setState({
             language: lang
         })
@@ -153,331 +169,515 @@ export default class TrashApp extends Component {
     }
 
     resetAll() {
+        this.handleBinStatistics()
         this.setState({
             currentPage: 0,
-            currentBin: 0
+            currentBin: 0,
+            shortcut: false
         })
     }
 
     setFavorite(index) {
-        let markers = this.state.favorite;
-        markers[index] = !this.state.favorite[index];
+        if (this.state.favorite[index] == 0) {
+            let markers = this.state.favorite;
+            markers[index] = index;
+            this.setState({
+                favorite: markers
+            });
+        } else {
+            let markers = this.state.favorite;
+            markers[index] = 0;
+            this.setState({
+                favorite: markers
+            });
+        }
+        AsyncStorage.setItem('favorite', JSON.stringify(this.state.favorite))
+    }
+
+    postTrash(trash, bin) {
+        fetch('http://smartbin.devfunction.com/api/', {
+            method: 'post',
+            body: JSON.stringify({
+                team_id: 3,
+                secret: 'Nw6X5T',
+                waste_statistics: trash,
+                bin_statistics: {
+                    general: bin[0],
+                    compostable: bin[2],
+                    recycle: bin[1],
+                    hazardous: bin[3]
+                }
+            })
+        })
+            .catch((error) => {
+                console.warn(error);
+            });
         this.setState({
-            favorite: markers
-        });
+            postTrash: [],
+            postBin: [0, 0, 0, 0]
+        })
     }
 
     doDispose(index) {
-        let markers = this.state.mostTrashedItem;
-        markers[index] = this.state.mostTrashedItem[index] + 1;
-        this.setState({
-            mostTrashedItem: markers
-        });
-        for (let i = 0; i < this.state.recent.length; i++) {
-            if (this.state.recent[i] == index) {
-                var array = this.state.recent
-                array.splice(i, 1);
-                this.setState({ recent: array });
+        let exist = false;
+        let arr = this.state.mostTrashedItem;
+        for (let i = 0; i < arr.length; i++) {
+            if (this.state.currentPage == arr[i].id) {
+                arr[i].count++
+                exist = true;
             }
         }
-        this.setState({ recent: [...this.state.recent, this.state.currentPage] });
+        if (exist == false) {
+            arr = [...arr, {id: this.state.currentPage, count: 1}]
+        }
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i].count < arr[i + 1].count) {
+                let temp = arr[i]
+                arr[i] = arr[i + 1]
+                arr[i + 1] = temp
+            }
+        }
+        this.setState({
+            mostTrashedItem: arr
+        })
+
+        let recentArray = this.state.recent
+        for (let i = 0; i < recentArray; i++) {
+            if (recentArray[i] == index) {
+                recentArray.splice(i, 1);
+            }
+        }
+        recentArray = [this.state.currentPage, ...recentArray]
+        this.setState({recent: recentArray});
+
+        let binArr = this.state.mostTrashedBin
+        binArr[content.default.items[index].bin - 1] = binArr[content.default.items[index].bin - 1] + 1
+        this.setState({mostTrashedBin: binArr})
+
+        AsyncStorage.setItem('mostTrashedItem', JSON.stringify(arr))
+        AsyncStorage.setItem('recent', JSON.stringify(this.state.recent))
+        AsyncStorage.setItem('mostTrashedBin', JSON.stringify(this.state.mostTrashedBin))
+
+        // add to post trash array
+        let existP = false;
+        let arrP = this.state.postTrash;
+        for (let i = 0; i < arrP.length; i++) {
+            if (content.default.items[this.state.currentPage].name == arrP[i].category) {
+                arrP[i].selected++
+                existP = true;
+            }
+        }
+        if (existP == false) {
+            arrP = [...arrP, {category: content.default.items[this.state.currentPage].name, selected: 1}]
+        }
+        for (let i = 0; i < arrP.length - 1; i++) {
+            if (arrP[i].selected < arrP[i + 1].selected) {
+                let temp = arrP[i]
+                arrP[i] = arrP[i + 1]
+                arrP[i + 1] = temp
+            }
+        }
+        this.setState({
+            postTrash: arrP
+        })
+
+        // add to post bin array
+        let binArrP = this.state.postBin
+        binArrP[content.default.items[index].bin - 1] = binArrP[content.default.items[index].bin - 1] + 1
+        this.setState({postBin: binArrP})
+        if (this.state.postBin[0] + this.state.postBin[1] + this.state.postBin[2] + this.state.postBin[3] >= 10) {
+            this.postTrash(arrP, binArrP);
+        }
     }
 
     renderIcon() {
         if (this.state.listMode == 'favorite') {
-            return <Icon name="md-star" size={30} />
+            return <Icon name="md-star" size={30}/>
         } else if (this.state.listMode == 'recent') {
-            return <Icon name="md-time" size={30} />
+            return <Icon name="md-time" size={30}/>
         } else if (this.state.listMode == 'most') {
-            return <Icon name="md-stats" size={30} />
+            return <Icon name="md-stats" size={30}/>
         }
+    }
+
+    showTrashFromHome(index) {
+        this.setState({
+            shortcut: true,
+            currentPage: index
+        })
+    }
+
+    hideTrashFromHome() {
+        this.setState({
+            shortcut: false,
+            currentPage: 0
+        })
     }
 
     renderList() {
         if (this.state.listMode == 'favorite') {
-            return <Icon name="md-star" size={30} />
+            return this.state.favorite.filter(value => value != 0).map(value =>
+                <TouchableOpacity key={value} style={styles.listBlock} onPress={()=>this.showTrashFromHome(value)}>
+                    <View
+                        style={{height:55,width:55,borderWidth:1,borderColor:'#ccc',backgroundColor:'#fff',marginTop:5,marginBottom:5,marginLeft:10,marginRight:10}}>
+                        <View style={{flex:1}}>
+                            <Image source={content.default.items[value].image} style={styles.trashIconStyle}
+                                   resizeMode="contain"/>
+                        </View>
+                    </View>
+                    <Text>{content.default.items[value].name}</Text>
+                </TouchableOpacity>
+            )
         } else if (this.state.listMode == 'recent') {
-            return <Icon name="md-time" size={30} />
+            return this.state.recent.map(value =>
+                <TouchableOpacity key={value} style={styles.listBlock}>
+                    <View
+                        style={{height:55,width:55,borderWidth:1,borderColor:'#ccc',backgroundColor:'#fff',marginTop:5,marginBottom:5,marginLeft:10,marginRight:10}}>
+                        <View style={{flex:1}}>
+                            <Image source={content.default.items[value].image} style={styles.trashIconStyle}
+                                   resizeMode="contain"/>
+                        </View>
+                    </View>
+                    <Text>{content.default.items[value].name}</Text>
+                </TouchableOpacity>
+            )
         } else if (this.state.listMode == 'most') {
-            return <Icon name="md-stats" size={30} />
+            return this.state.mostTrashedItem.map(value =>
+                <TouchableOpacity key={value.id} style={styles.listBlock}>
+                    <View
+                        style={{height:55,width:55,borderWidth:1,borderColor:'#ccc',backgroundColor:'#fff',marginTop:5,marginBottom:5,marginLeft:10,marginRight:10}}>
+                        <View style={{flex:1}}>
+                            <Image source={content.default.items[value.id].image} style={styles.trashIconStyle}
+                                   resizeMode="contain"/>
+                        </View>
+                    </View>
+                    <Text>{content.default.items[value.id].name}</Text>
+                </TouchableOpacity>
+            )
         }
+    }
+
+    deleteLocal() {
+        this.setState({
+            favorite: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            recent: [],
+            mostTrashedItem: [],
+            mostTrashedBin: [0, 0, 0, 0],
+        })
+        AsyncStorage.setItem('favorite', JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        AsyncStorage.setItem('mostTrashedItem', JSON.stringify([]))
+        AsyncStorage.setItem('recent', JSON.stringify([]))
+        AsyncStorage.setItem('mostTrashedBin', JSON.stringify([0, 0, 0, 0]))
     }
 
     render() {
         return <ScrollableTabView
-            initialPage={1}
-            onChangeTab={() => this.resetAll()}
+            initialPage={0}
+            onChangeTab={()=>this.resetAll()}
             renderTabBar={() => <CustomTabBar />}
         >
+
+            {/* #1 tab home*/}
+
             <ScrollView tabLabel="md-home" style={styles.tabView}>
-                <View style={styles.pickerContainer}>
-                    {this.renderIcon()}
-                    <View style={styles.pickerStyle}>
-                        <Picker
-                            selectedValue={this.state.listMode}
-                            onValueChange={(itemValue, itemIndex) => this.setState({ listMode: itemValue })}>
-                            <Picker.Item label={content.favorite}
-                                value="favorite" />
-                            <Picker.Item label={content.recent}
-                                value="recent" />
-                            <Picker.Item label={content.mostSelect}
-                                value="most" />
-                        </Picker>
+                {this.state.shortcut ?
+                    <View>
+                        <View style={styles.backTabStyle}>
+                            <TouchableOpacity
+                                onPress={()=>this.hideTrashFromHome()}>
+                                <Icon name="md-arrow-back" size={30}/>
+                            </TouchableOpacity>
+                            <Text>{content.default.items[this.state.currentPage].name}</Text>
+                            {content.default.items[this.state.currentPage].status == 'category' ?
+                                <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                                :
+                                (this.state.favorite[this.state.currentPage] == 0 ?
+                                        <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                            <Icon name="md-star-outline" size={30}/>
+                                        </TouchableOpacity>
+                                        :
+                                        <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                            <Icon name="md-star" color="#ffce00" size={30}/>
+                                        </TouchableOpacity>
+                                )}
+                        </View>
+                        <View>
+                            <View style={styles.trashToBinBlockStyle}>
+                                <View style={{alignItems:'center'}}>
+                                    <View style={[styles.trashToBinElementStyle,{flex:1}]}>
+                                        <Image source={content.default.items[this.state.currentPage].image}
+                                               style={styles.imageInBlock} resizeMode="contain"/>
+                                    </View>
+                                    <Text>{content.default.items[this.state.currentPage].name}</Text>
+                                </View>
+                                <Icon name="md-arrow-round-forward" size={30}/>
+                                <View style={{alignItems:'center'}}>
+                                    <View style={[styles.trashToBinElementStyle,{flex:1}]}>
+                                        <Image
+                                            source={content.default.Bin[content.default.items[this.state.currentPage].bin].image}
+                                            style={styles.imageInBlock} resizeMode="contain"/>
+                                    </View>
+                                    <Text>{content.default.Bin[content.default.items[this.state.currentPage].bin].name}</Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.trashButtonStyle}
+                                              onPress={()=>this.doDispose(this.state.currentPage)}>
+                                <Text>Dispose</Text>
+                            </TouchableOpacity>
+                            <Text>{content.default.notes}</Text>
+                            <Text>{content.default.items[this.state.currentPage].description}</Text>
+                        </View>
                     </View>
-                </View>
+                    :
+                    <View>
+                        <View style={{borderBottomWidth:1,borderBottomColor:"#ccc"}}>
+                            <View style={styles.pickerContainer}>
+                                {this.renderIcon()}
+                                <View style={styles.pickerStyle}>
+                                    <Picker
+                                        selectedValue={this.state.listMode}
+                                        onValueChange={(itemValue, itemIndex) => this.setState({listMode: itemValue})}>
+                                        <Picker.Item label={content.default.favorite}
+                                                     value="favorite"/>
+                                        <Picker.Item label={content.default.recent}
+                                                     value="recent"/>
+                                        <Picker.Item label={content.default.mostSelect}
+                                                     value="most"/>
+                                    </Picker>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{marginBottom:50}}>
+                            {this.renderList()}
+                        </View>
+                    </View>
+                }
             </ScrollView>
-            <ScrollView tabLabel="md-search" style={[styles.tabView, { flex: 1 }]}>
+
+            {/* #2 tab trash category*/}
+
+            <ScrollView tabLabel="md-apps" style={[styles.tabView,{flex:1}]}>
                 <View style={styles.backTabStyle}>
-                    <TouchableOpacity
-                        onPress={() => this.handleItemSelect(content.items[this.state.currentPage].parentID)}>
-                        <Icon name="md-arrow-back" size={30} />
-                    </TouchableOpacity>
-                    <Text>{content.items[this.state.currentPage].name}</Text>
-                    {content.items[this.state.currentPage].status == 'category' ?
-                        <Icon name="md-arrow-back" color="#F7F7F7" size={30} />
+                    {this.state.currentPage != 0 ?
+                        <TouchableOpacity
+                            onPress={()=>this.handleItemSelect(content.default.items[this.state.currentPage].parentID)}>
+                            <Icon name="md-arrow-back" size={30}/>
+                        </TouchableOpacity>
                         :
-                        (this.state.favorite[this.state.currentPage] == 1 ?
-                            <TouchableOpacity onPress={() => this.setFavorite(this.state.currentPage)}>
-                                <Icon name="md-star" color="#ffce00" size={30} />
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity onPress={() => this.setFavorite(this.state.currentPage)}>
-                                <Icon name="md-star-outline" size={30} />
-                            </TouchableOpacity>
+                        <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                    }
+                    <Text>{content.default.items[this.state.currentPage].name}</Text>
+                    {content.default.items[this.state.currentPage].status == 'category' ?
+                        <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                        :
+                        (this.state.favorite[this.state.currentPage] == 0 ?
+                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                    <Icon name="md-star-outline" size={30}/>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={()=>this.setFavorite(this.state.currentPage)}>
+                                    <Icon name="md-star" color="#ffce00" size={30}/>
+                                </TouchableOpacity>
 
                         )}
                 </View>
-                {content.items[this.state.currentPage].status == 'category' ?
+                {content.default.items[this.state.currentPage].status == 'category' ?
                     <GridView
                         enableEmptySections={true}
                         itemWidth={100}
-                        items={content.items[this.state.currentPage].childID}
+                        items={content.default.items[this.state.currentPage].childID}
                         style={styles.gridView}
                         renderItem={item =>
-                            <TouchableOpacity style={styles.itemContainer} onPress={() => this.handleItemSelect(item)}>
-                                <Text style={styles.itemName}>{content.items[item].name}</Text>
+                            <TouchableOpacity style={styles.gridStyle} onPress={()=>this.handleItemSelect(item)}>
+                                <View style={{flex:1}}>
+                                    <Image source={content.default.items[item].image} style={styles.imageInBlock} resizeMode="contain"/>
+                                </View>
+                                <Text>{content.default.items[item].name}</Text>
                             </TouchableOpacity>
-                        }
+                            }
                     />
                     :
                     <View>
                         <View style={styles.trashToBinBlockStyle}>
-                            <View style={styles.imageInBlock}></View>
-                            <Icon name="md-arrow-round-forward" size={30} />
-                            <View style={styles.imageInBlock}></View>
+                            <View style={{alignItems:'center'}}>
+                                <View style={[styles.trashToBinElementStyle,{flex:1}]}>
+                                    <Image source={content.default.items[this.state.currentPage].image}
+                                           style={styles.imageInBlock} resizeMode="contain"/>
+                                </View>
+                                <Text>{content.default.items[this.state.currentPage].name}</Text>
+                            </View>
+                            <Icon name="md-arrow-round-forward" size={30}/>
+                            <View style={{alignItems:'center'}}>
+                                <View style={[styles.trashToBinElementStyle,{flex:1}]}>
+                                    <Image
+                                        source={content.default.Bin[content.default.items[this.state.currentPage].bin].image}
+                                        style={styles.imageInBlock} resizeMode="contain"/>
+                                </View>
+                                <Text>{content.default.Bin[content.default.items[this.state.currentPage].bin].name}</Text>
+                            </View>
                         </View>
                         <TouchableOpacity style={styles.trashButtonStyle}
-                            onPress={() => this.doDispose(this.state.currentPage)}>
-                            <Text>Button</Text>
+                                          onPress={()=>this.doDispose(this.state.currentPage)}>
+                            <Text>Dispose</Text>
                         </TouchableOpacity>
-                        <Text>{content.notes}</Text>
-                        <Text>{content.items[this.state.currentPage].description}</Text>
+                        <Text>{content.default.notes}</Text>
+                        <Text>{content.default.items[this.state.currentPage].description}</Text>
                     </View>
                 }
             </ScrollView>
+
+            {/* #3 tab bin category*/}
+
             <ScrollView tabLabel="md-trash" style={styles.tabView}>
                 <View style={styles.backTabStyle}>
-                    <TouchableOpacity
-                        onPress={() => this.handleBinSelect(content.Bin[this.state.currentBin].parentID)}>
-                        <Icon name="md-arrow-back" size={30} />
-                    </TouchableOpacity>
-                    <Text>{content.Bin[this.state.currentBin].name}</Text>
-                    <Icon name="md-arrow-back" color="#F7F7F7" size={30} />
+                    {this.state.currentBin != 0 ?
+                        <TouchableOpacity
+                            onPress={()=>this.handleBinSelect(content.default.Bin[this.state.currentBin].parentID)}>
+                            <Icon name="md-arrow-back" size={30}/>
+                        </TouchableOpacity>
+                        :
+                        <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
+                    }
+                    <Text>{content.default.Bin[this.state.currentBin].name}</Text>
+                    <Icon name="md-arrow-back" color="#F7F7F7" size={30}/>
                 </View>
-                {content.Bin[this.state.currentBin].status == 'category' ?
+                {content.default.Bin[this.state.currentBin].status == 'category' ?
                     <GridView
                         enableEmptySections={true}
                         itemWidth={150}
-                        items={content.Bin[this.state.currentBin].childID}
+                        items={content.default.Bin[this.state.currentBin].childID}
                         style={styles.gridView}
                         renderItem={item =>
-                            <TouchableOpacity style={styles.itemContainer} onPress={() => this.handleBinSelect(item)}>
-                                <Text style={styles.itemName}>{item}</Text>
+                            <TouchableOpacity style={styles.gridStyle} onPress={()=>this.handleBinSelect(item)}>
+                                <View style={{flex:1}}>
+                                    <Image source={content.default.Bin[item].image} style={styles.imageInBlock} resizeMode="contain"/>
+                                </View>
+                                <Text>{content.default.Bin[item].name}</Text>
                             </TouchableOpacity>
-                        }
+                         }
                     />
                     :
-                    <View style={{alignSelf:'center'}}>
+                    <View>
                         <View style={styles.trashcanStyle}>
-                            <View style={styles.imageInBlock}></View>
-                            <Text>{content.Bin[this.state.currentBin].color}</Text>
+                            <Image source={content.default.Bin[this.state.currentBin].image} style={styles.imageInBlock}
+                                   resizeMode="contain"/>
+                            <Text>{content.default.Bin[this.state.currentBin].color}</Text>
                         </View>
                         <View>
-                            <Text>{content.item}</Text>
-                            {content.Bin[this.state.currentBin].dispose.map(item =>
-                                <Text key={item}>- {content.items[item].name}</Text>
+                            <Text>{content.default.item}</Text>
+                            {content.default.Bin[this.state.currentBin].dispose.map(item =>
+                                <Text key={item}>- {content.default.items[item].name}</Text>
                             )}
                         </View>
                     </View>
                 }
             </ScrollView>
+
+            {/* #4 tab statistics*/}
+
             <ScrollView tabLabel="md-pie" style={styles.tabView}>
                 <View style={styles.card}>
                     <View style={styles.tabStyle}>
-                        <View style={this.state.staticTab==true?{borderBottomWidth: 1}:{}}>
-                        {this.state.langFlag == true &&
+                        <View style={this.state.staticTab==true?{borderBottomWidth: 1,borderBottomColor:'#ccc'}:{}}>
+                            {this.state.langFlag == true &&
                             <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>Global Statistics</Text></TouchableOpacity>
-                        }
-                        {this.state.langFlag == false &&
+                            }
+                            {this.state.langFlag == false &&
                             <TouchableOpacity onPress={() => this.changeTab('gol')}><Text style={styles.changeView}>สถิติสากล</Text></TouchableOpacity>
-                        }
+                            }
                         </View>
                         <Text style={{fontSize:18, padding:2, margin: 2}}>|</Text>
-                        <View style={this.state.staticTab==false?{borderBottomWidth: 1}:{}}>
-                        {this.state.langFlag == true &&
+                        <View style={this.state.staticTab==false?{borderBottomWidth: 1,borderBottomColor:'#ccc'}:{}}>
+                            {this.state.langFlag == true &&
                             <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>My Statistics</Text></TouchableOpacity>
-                        }
-                        {this.state.langFlag == false &&
-                            <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>สถิติสาของฉัน</Text></TouchableOpacity>
-                        }
+                            }
+                            {this.state.langFlag == false &&
+                            <TouchableOpacity onPress={() => this.changeTab('lo')}><Text style={styles.changeView}>สถิติของฉัน</Text></TouchableOpacity>
+                            }
                         </View>
                     </View>
                     {this.state.langFlag == true &&
-                        <Text style={styles.statisticsHeader}>Waste disposal statistics</Text>
+                    <Text style={styles.statisticsHeader}>Waste disposal statistics</Text>
                     }
                     {this.state.langFlag == false &&
-                        <Text style={styles.statisticsHeader}>สถิติการทิ้งขยะ</Text>
+                    <Text style={styles.statisticsHeader}>สถิติการทิ้งขยะ</Text>
                     }
                     {this.state.staticTab == true &&
-                        <WebView
-                            source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
-                            scalesPageToFit={true}
-                            automaticallyAdjustContentInsets={true}
-                            scrollEnabled={false}
-                        />
+                    <WebView
+                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501426983299#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"General"},{"v":' + this.state.general + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.compostable + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.recycle + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.hazardous + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                        scalesPageToFit={true}
+                        automaticallyAdjustContentInsets={true}
+                        scrollEnabled={false}
+                    />
                     }
                     {this.state.staticTab == false &&
-                        <WebView
-                            source={{ uri: 'http://charts.hohli.com/embed.html?created=1501569339624#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"Genral"},{"v":' + this.state.mostTrashedBin[0] + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.mostTrashedBin[1] + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.mostTrashedBin[2] + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.mostTrashedBin[3] + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }} scalesPageToFit={true}
-                            scalesPageToFit={true}
-                            automaticallyAdjustContentInsets={true}
-                            scrollEnabled={false}
-                        />
+                    <WebView
+                        source={{ uri: 'http://charts.hohli.com/embed.html?created=1501569339624#w=320&h=240&d={"containerId":"chart","dataTable":{"cols":[{"label":"A","type":"string"},{"label":"B","type":"number"}],"rows":[{"c":[{"v":"Genral"},{"v":' + this.state.mostTrashedBin[0] + '}]},{"c":[{"v":"Compostable"},{"v":' + this.state.mostTrashedBin[2] + '}]},{"c":[{"v":"Recycle"},{"v":' + this.state.mostTrashedBin[1] + '}]},{"c":[{"v":"Hazardous"},{"v":' + this.state.mostTrashedBin[3] + '}]}]},"options":{"width":320,"height":240},"state":{},"isDefaultVisualization":true,"chartType":"PieChart"}' }}
+                        scalesPageToFit={true}
+                        automaticallyAdjustContentInsets={true}
+                        scrollEnabled={false}
+                    />
                     }
                 </View>
-            </ScrollView>
-            <ScrollView tabLabel="md-settings" style={styles.tabView}>
-                <View style={styles}>
-
+                {this.state.staticTab == true &&
+                <Text></Text>}
+                {this.state.staticTab == false &&
+                <View>
+                    <Text>Statistics</Text>
+                    <View style={{flexDirection:'row',flex:1}}>
+                        <View style={{flex:1}}>
+                            <View style={{backgroundColor:'#fff',borderWidth:1,borderColor:'#ccc'}}>
+                                <Text>{content.default.item}</Text>
+                            </View>
+                            <View style={{backgroundColor:'#fff',borderWidth:1,borderColor:'#ccc'}}>
+                                {this.state.mostTrashedItem.map(value =>
+                                    <Text key={value.id}>{content.default.items[value.id].name}</Text>
+                                )}
+                            </View>
+                        </View>
+                        <View style={{flex:1}}>
+                            <View style={{backgroundColor:'#fff',borderWidth:1,borderColor:'#ccc'}}>
+                                <Text>{content.default.quantity}</Text>
+                            </View>
+                            <View style={{backgroundColor:'#fff',borderWidth:1,borderColor:'#ccc'}}>
+                                {this.state.mostTrashedItem.map(value =>
+                                    <Text key={value.id}>{value.count}</Text>
+                                )}
+                            </View>
+                        </View>
+                    </View>
                 </View>
-                {this.state.langFlag == true &&
+                }
+            </ScrollView>
+
+            {/* #5 tab settings*/}
+
+            <ScrollView tabLabel="md-settings" style={styles.tabView}>
+                {this.state.language == 'en' &&
+                <TouchableOpacity onPress={() => this.deleteLocal()}>
                     <Text style={styles.menuView}>Clear history</Text>
+                </TouchableOpacity>
                 }
-                {this.state.langFlag == false &&
+                {this.state.language == 'th' &&
+                <TouchableOpacity onPress={() => this.deleteLocal()}>
                     <Text style={styles.menuView}>ล้างข้อมูล</Text>
+                </TouchableOpacity>
                 }
-                {this.state.langFlag == false &&
-                    <TouchableOpacity onPress={() => this.changeLanguage('en')}><Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text></TouchableOpacity>
+                {this.state.language == 'th' &&
+                <TouchableOpacity onPress={() => this.changeLanguage('en')}>
+                    <Text style={styles.menuView}>เปลี่ยนเป็นภาษาอังกฤษ</Text>
+                </TouchableOpacity>
                 }
-                {this.state.langFlag == true &&
-                    <TouchableOpacity onPress={() => this.changeLanguage('th')}><Text style={styles.menuView}>Change to TH</Text></TouchableOpacity>
+                {this.state.language == 'en' &&
+                <TouchableOpacity onPress={() => this.changeLanguage('th')}>
+                    <Text style={styles.menuView}>Change to thai</Text>
+                </TouchableOpacity>
                 }
             </ScrollView>
         </ScrollableTabView>;
     }
 };
 
-const styles = StyleSheet.create({
-    tabView: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: 'rgba(0,0,0,0.01)',
-    },
-    card: {
-        borderWidth: 1,
-        backgroundColor: '#fff',
-        borderColor: 'rgba(0,0,0,0.1)',
-        margin: 5,
-        height: 320,
-        padding: 15,
-        shadowColor: '#ccc',
-        shadowOffset: { width: 2, height: 2, },
-        shadowOpacity: 0.5,
-        shadowRadius: 3,
-    },
-    gridView: {
-        paddingTop: 25,
-        flex: 1,
-    },
-    itemContainer: {
-        justifyContent: 'flex-end',
-        borderRadius: 5,
-        padding: 10,
-        height: 150,
-        backgroundColor: '#555555'
-    },
-    itemName: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: '600',
-    },
-    itemCode: {
-        fontWeight: '600',
-        fontSize: 12,
-        color: '#fff',
-    },
-    backTabStyle: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        justifyContent: 'space-between',
-        flexDirection: 'row'
-    },
-    trashToBinBlockStyle: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#ccc',
-        borderRadius: 20,
-        marginTop: 20,
-        marginBottom: 20
-    },
-    imageInBlock: {
-        flex: 1,
-        backgroundColor: '#555555',
-        padding: 50,
-        margin: 30,
-        alignSelf: 'center'
-    },
-    trashButtonStyle: {
-        flexDirection: 'row',
-        padding: 5,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        justifyContent: 'center'
-    },
-    trashcanStyle: {
-        alignItems: 'center'
-    },
-    pickerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    pickerStyle: {
-        alignSelf: 'stretch',
-        marginLeft: 5,
-        marginRight: 5,
-        flex: 2.5
-    },
-    menuView: {
-        flex: 1,
-        padding: 10,
-        borderBottomWidth: 1,
-    },
-    statisticsHeader: {
-        fontSize: 18,
-        alignSelf: 'center'
-    },
-    tabStyle: {
-        flexDirection: 'row',
-        alignSelf: 'center'
-    },
-    changeView: {
-        fontSize: 18,
-        padding: 2,
-        margin: 2,
-    },
-});
+styles = require('./Style');
+
 AppRegistry.registerComponent('TrashApp', () => TrashApp);
